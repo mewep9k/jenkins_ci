@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone repository') {
+            steps {
+                script {
+                    git branch: 'main', credentialsId: '3590100c-8a89-40aa-8a23-c16cfae8c04f', url: 'https://github.com/mewep9k/jenkins_ci.git'
+                }
+            }
+        }
+
+        stage('Create job.log') {
+            steps {
+                sh 'touch job.log'
+            }
+        }
+
+        stage('Append log entry') {
+            steps {
+                script {
+                    def currentTime = new Date().format('yyyy-MM-dd HH:mm:ss')
+                    sh "echo '${currentTime} - PRjob executed' >> job.log"
+                    sh 'git add job.log'
+                    sh 'git commit -m "Added job.log entry"'
+                }
+            }
+        }
+
+        stage('Push changes to GitHub') {
+            steps {
+                sh 'git push origin main'
+            }
+        }
+
+        stage('Send email') {
+            steps {
+                emailext (
+                    to: 'd4circle@gmail.com',
+                    subject: 'Pipeline Result',
+                    body: 'Pipeline execution ${currentBuild.result}.\nGitHub repository: https://github.com/mewep9k/jenkins_ci.git'
+                )
+            }
+        }
+    }
+}
