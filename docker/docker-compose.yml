@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    privileged: true
+    user: root
+    ports:
+     - 8080:8080
+     - 50000:50000
+    container_name: jenkins
+    volumes:
+     - /home/dunice/compose-demo/jenkins-compose/jenkins_configuration:/var/jenkins_home
+     - /var/run/docker.sock:/var/run/docker.sock
+  agent:
+    image: jenkins/ssh-agent:jdk11
+    privileged: true
+    user: root
+    container_name: jenkins_agent
+    expose:
+      - 22
+    environment:
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDIUmfaislvI5dF6jFjEMJkhJHUEi9XiAluHS97j24rW0v46Z+Rks5lW+6AfGVxNV8GHVFOnpqGxnrBBstbDLKBz6JXB1cZ5uAnSADpfZDm3wfPufOBu5TKfSL4O5MaS8QIegiWEHSlifXRvz6J9uXkQY/N/fWisXhAk1JT2sAniW7SVMpJxYMGrNhVm7SjRGWxoFd8zV0+7unx4e7zUKPT/s6C6b8L+urM3Q44UE0luv5gnIsL4bxFNcBoA6wiH7CCCLOAGaQ0OausXHf5aCDanolR8Bg8SgJs0wvCV3kPGcOA9XDhozVaoD7f7ioP58AAhtpRBqDGESP7EJkXk2//i0XCCEGMRfF+dTSK9KEde/hSlT3ErzQwep3lsG2nf82F2gQLEi4ufxdbQFJs+seA45f3KLB/6s0EDLMlvoT0SneQMiXkflB4W1y184Vewle3kxWASqWVadw4Tk7UuCKW+d7cE4BkzJXXcxSl2YsT6mg62qEujLx41WVbEW+lMNk= dm@mes-MS-7D22
